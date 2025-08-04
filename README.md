@@ -1,86 +1,97 @@
-# ⚡ Kafka Trade Streaming using FastEndpoints (.NET 8 + Kafka)
+# ⚡ Real-Time Kafka Trade Stream with FastEndpoints (.NET 8)
 
-## 🚀 Overview
+## 🎯 Purpose
 
-A high-performance, event-driven microservice that streams trades, recalculates VWAP in real-time, and exposes FastEndpoints to ingest or query trades. Perfect for trading desks, risk platforms, or real-time analytics.
+This is a **production-grade microservice** demonstrating how to stream trade data using **Kafka** and **.NET 8's FastEndpoints**. The system is designed for **low-latency trade ingestion**, **VWAP (Volume-Weighted Average Price) computation**, and **async API exposure**, making it ideal for use cases in:
 
----
-
-## 📦 Features
-
-- ✅ **Kafka-Driven Architecture** — Clean separation of producer/consumer
-- ✅ **VWAP Calculator** — In-memory trade aggregation with precision
-- ✅ **Async FastEndpoints** — Minimal, low-latency API endpoints
-- ✅ **Docker-Ready** — Local setup in seconds
-- ✅ **Pro-Level xUnit Tests** — Coverage for domain, endpoints, and edge cases
+- Front Office: trade streaming, pricing feeds
+- Middle Office: trade validation, PnL aggregation
+- Back Office: post-trade reconciliation, audit trails
 
 ---
 
-## 🧠 Folder Structure
+## ✅ Key Highlights
+
+- 🧠 Event-driven pipeline using Kafka (Producer + Consumer)
+- 📈 VWAP calculation engine with in-memory storage
+- ⚙️ REST API endpoints using FastEndpoints (.NET 8)
+- 🐳 Docker-ready microservice
+- 🧪 Extensive xUnit test coverage for business logic & endpoints
+
+---
+
+## 🧱 Folder Structure
 
 ```
 Kafka.FastEndpoints.TradeStream/
-├── Domain/                  # Models + VWAPStore
-├── Endpoints/               # POST /trade/upload & GET /trade/vwap/{symbol}
-├── ProducerService/         # Kafka producer for simulated trades
-├── ConsumerService/         # Kafka consumer (hosted) for VWAP updates
-├── Tests/                   # VWAPStore, Processor, DB mocks, Endpoint tests
-├── Dockerfile               # Buildable microservice container
+├── Domain/                  # VWAP logic, trade models
+├── Endpoints/               # API: upload trades + fetch VWAP
+├── ProducerService/         # Simulates Kafka trade producers
+├── ConsumerService/         # Kafka consumers process trades
+├── Tests/                   # Unit/integration tests using xUnit
+├── Dockerfile               # Container build file
 └── README.md
 ```
 
 ---
 
-## 🔧 Local Setup Guide
+## 🔧 Prerequisites
 
-### 1️⃣ Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/)
-- Docker Desktop
-- Kafka (using Redpanda for dev)
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- Docker Desktop (for Kafka or Redpanda)
+- CLI / Terminal
 
-### 2️⃣ Run Kafka locally (via Docker)
+---
+
+## 🚀 How to Run (End-to-End)
+
+### 🔌 1. Start Kafka Locally (Using Redpanda)
 
 ```bash
 docker run -d --name redpanda -p 9092:9092 docker.redpanda.com/redpandadata/redpanda:latest redpanda start --overprovisioned --advertise-kafka-addr=localhost:9092
 ```
 
-### 3️⃣ Run API
+### ⚙️ 2. Run the Main API Service
+
 ```bash
 dotnet run --project Kafka.FastEndpoints.TradeStream
 ```
 
-### 4️⃣ Kafka Producer
+### 📤 3. Run Kafka Trade Producer
+
 ```bash
 dotnet run --project Kafka.FastEndpoints.TradeStream/ProducerService
 ```
 
-### 5️⃣ Kafka Consumer (Hosted service)
+### 📥 4. Run Kafka Trade Consumer
+
 ```bash
 dotnet run --project Kafka.FastEndpoints.TradeStream/ConsumerService
 ```
 
 ---
 
-## ✅ API Endpoints
+## 🌐 API Endpoints (FastEndpoints)
 
-| Verb | Path                    | Description              |
-|------|-------------------------|--------------------------|
-| POST | `/trade/upload`         | Submit new trade         |
-| GET  | `/trade/vwap/{symbol}`  | Fetch VWAP for symbol    |
+| Verb | Endpoint                  | Purpose                     |
+|------|---------------------------|-----------------------------|
+| POST | `/trade/upload`          | Upload trade into Kafka     |
+| GET  | `/trade/vwap/{symbol}`   | Get latest VWAP by symbol   |
 
 ---
 
-## 🧪 Unit Test Plan
+## 🧪 Test Coverage (xUnit)
 
-Tests cover:
+This repo includes professional-level tests with clear separation:
 
-- ✔️ VWAP logic edge cases
-- ✔️ No trades / malformed input handling
-- ✔️ JSON deserialization & type safety
-- ✔️ Endpoint-level integration
-- ✔️ Placeholders for DB interaction
+| Test Project             | Coverage Area                                |
+|--------------------------|----------------------------------------------|
+| VWAPStoreTests.cs        | VWAP math logic, edge-case precision         |
+| TradeProcessorTests.cs   | Trade validation logic, malformed inputs     |
+| TradeRepositoryTests.cs  | DB I/O test doubles (mock/fake interactions) |
+| UploadVWAPTradeTests.cs  | FastEndpoint API status, invalid payloads    |
 
-Run tests:
+### Run Tests
 
 ```bash
 dotnet test
@@ -88,28 +99,37 @@ dotnet test
 
 ---
 
-## 📦 Docker Build
+## 🐳 Docker Instructions
+
+### 📦 Build Docker Image
 
 ```bash
 docker build -t trade-fastendpoints .
 ```
 
+### 🚀 Run Docker Container
+
+```bash
+docker run --rm -p 8080:80 trade-fastendpoints
+```
+
 ---
 
-## 🧠 Hiring Manager Highlights
+## 🧠 What This Demonstrates
 
-- 🔁 End-to-end trade stream + real-time recalculation
-- 📉 Optimized for low-latency processing with Kafka
-- 📊 Finance-first use case (VWAP + async delivery)
-- 🧪 Pro-level unit test design
-- 🚀 Modular, testable, and cloud-ready
+- Real-time Kafka ingestion pipeline (Producer → Consumer)
+- Clean, testable FastEndpoints API layer
+- VWAP logic useful for front-office analytics or portfolio tools
+- Professional test suite following best practice patterns
+- Fully modular, async-ready microservice using .NET 8
 
 ---
 
 ## 🔗 GitHub
 
-[🔗 GitHub: senthilts9/TradeStream FastEndpoints](https://github.com/senthilts9/)
+View full source code and future improvements on GitHub:  
+👉 [https://github.com/senthilts9/](https://github.com/senthilts9/)
 
 ---
 
-Built for production-grade, low-latency trading systems 💹
+Crafted for modern financial systems where **speed**, **accuracy**, and **observability** matter. 🧠📊
